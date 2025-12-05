@@ -51,8 +51,11 @@ export class Network {
 
     cleanup() {
         // Check for disconnected peers
+        if (!this.room.peers) return;
+        
         const currentPeerIds = Object.keys(this.room.peers);
-        const knownPeerIds = Object.keys(this.game.remotePlayers);
+        // Use game.peers as the source of known players
+        const knownPeerIds = Object.keys(this.game.peers);
 
         for (const id of knownPeerIds) {
             if (!currentPeerIds.includes(id)) {
