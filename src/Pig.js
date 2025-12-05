@@ -17,6 +17,11 @@ export class Pig {
         
         // Animation state
         this.legAngle = 0;
+        this.isMoving = false;
+        
+        // Networking interpolation targets
+        this.targetPos = null;
+        this.targetRot = 0;
     }
 
     createPigGeometry() {
@@ -120,5 +125,60 @@ export class Pig {
         rightArm.position.set(-0.15, 0.5, 0.1);
         rightArm.rotation.x = -1;
         this.riderGroup.add(rightArm);
+
+        // Head (PFP)
+        const headGeo = new THREE.SphereGeometry(0.25, 32, 32);
+        this.riderHeadMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        this.riderHead = new THREE.Mesh(headGeo, this.riderHeadMat);
+        this.riderHead.position.y = 0.85;
+        // Rotate so face of texture points forward if needed, usually UV sphere mapping is ok
+        this.riderHead.rotation.y = -Math.PI / 2; 
+        this.riderGroup.add(this.riderHead);
+    }
+
+    setAvatar(url) {
+        if (!url) return;
+        
+        const loader = new THREE.TextureLoader();
+        loader.crossOrigin = 'anonymous';
+        
+        // Try loading directly
+        loader.load(
+            url,
+            (texture) => {
+                this.riderHeadMat.map = texture;
+                this.riderHeadMat.needsUpdate = true;
+            },
+            undefined,
+            (err) => {
+                console.warn("Avatar load failed, trying proxy", err);
+                // Fallback to CORS proxy
+                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+                loader.load(proxyUrl, (texture) => {
+                    this.riderHeadMat.map = texture;
+                    this.riderHeadMat.needsUpdate = true;
+                });
+            }
+        );
+    }
+
+    update(dt) {
+        if (this.isMoving) {
+            const speed = 15;
+            this.legAngle += speed * dt;
+            
+            // Swing legs
+            this.legs[0].rotation.x = Math.sin(this.legAngle) * 0.5; // Front L
+            this.legs[1].rotation.x = Math.sin(this.legAngle + Math.PI) * 0.5; // Front R
+            this.legs[2].rotation.x = Math.sin(this.legAngle + Math.PI) * 0.5; // Back L
+            this.legs[3].rotation.x = Math.sin(this.legAngle) * 0.5; // Back R
+            
+            // Bob body
+            this.bodyGroup.position.y = Math.abs(Math.sin(this.legAngle)) * 0.05;
+        } else {
+            // Reset
+            this.legs.forEach(leg => leg.rotation.x = THREE.MathUtils.lerp(leg.rotation.x, 0, 10 * dt));
+            this.bodyGroup.position.y = THREE.MathUtils.lerp(this.bodyGroup.position.y, 0, 10 * dt);
+        }
     }
 }
