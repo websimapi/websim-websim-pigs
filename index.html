@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Websim Pigs</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #joystick-zone { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px; pointer-events: auto; }
+        .loading {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); color: white; display: flex;
+            justify-content: center; align-items: center; flex-direction: column;
+            z-index: 100; transition: opacity 0.5s;
+        }
+        .nametag {
+            position: absolute; background: rgba(0, 0, 0, 0.5); color: white;
+            padding: 2px 6px; border-radius: 4px; font-size: 12px;
+            pointer-events: none; transform: translate(-50%, -100%);
+            white-space: nowrap; font-weight: bold;
+            text-shadow: 1px 1px 0 #000;
+        }
+        #info {
+            position: absolute; top: 10px; left: 10px; color: white; font-weight: bold;
+            text-shadow: 1px 1px 2px black; pointer-events: auto;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://esm.sh/three@0.160.0",
+                "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/",
+                "nipplejs": "https://esm.sh/nipplejs@0.10.1"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="ui-layer">
+        <div id="info">
+            Controls: WASD / Arrows to move<br>
+            Mobile: On-screen Joystick
+        </div>
+        <div id="joystick-zone"></div>
+        <div id="nametags-container"></div>
+    </div>
+    <div id="loading" class="loading">
+        <h1>Websim Pigs</h1>
+        <p>Connecting to room...</p>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
